@@ -5,6 +5,12 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+
+	_ "github.com/clipperhouse/linkedlist"
+	_ "github.com/clipperhouse/ring"
+	_ "github.com/clipperhouse/setwriter"
+	_ "github.com/clipperhouse/slice"
+	_ "github.com/clipperhouse/stringer"
 )
 
 func main() {
@@ -37,7 +43,8 @@ func runMain(args []string) error {
 
 	if len(cmd) == 0 {
 		// simply typed 'gen'; run is the default command
-		return run(c)
+		c.RequestedPackages = tail
+		return runStandard(c)
 	}
 
 	switch cmd {
@@ -82,7 +89,7 @@ func parseArgs(args []string) (cmd string, force bool, tail []string, err error)
 	}
 
 	// tail is only valid on add & get; otherwise an error
-	if len(tail) > 0 && cmd != "add" && cmd != "get" {
+	if len(tail) > 0 && cmd != "add" && cmd != "get" && cmd != "" {
 		err = fmt.Errorf("unknown command(s) %v", tail)
 		tail = []string{}
 	}
