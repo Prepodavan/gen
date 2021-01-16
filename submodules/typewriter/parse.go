@@ -14,18 +14,18 @@ import (
 )
 
 type Suite struct {
-	Fset *token.FileSet
+	Fset     *token.FileSet
 	Packages map[string]*ast.Package
 }
 
 func parseAll(conf *Config) (*Suite, error) {
 	imp := gotype.NewImporter()
 	suite := &Suite{
-		Fset:       imp.FileSet(),
-		Packages:   make(map[string]*ast.Package),
+		Fset:     imp.FileSet(),
+		Packages: make(map[string]*ast.Package),
 	}
 	for _, pkgPath := range conf.RequestedPackages {
-		pkg, err := imp.Import(pkgPath, pkgPath)
+		pkg, err := imp.Import(pkgPath, conf.SrcPath)
 		if err != nil {
 			return nil, err
 		}
@@ -58,7 +58,7 @@ func parseGoType(in gotype.Type, gotypeImporter *gotype.Importer, out *Suite) er
 	}
 	for _, f := range pkg.Files {
 		for _, is := range f.Imports {
-			pv := is.Path.Value[1:len(is.Path.Value)-1]
+			pv := is.Path.Value[1 : len(is.Path.Value)-1]
 			if _, ok := out.Packages[pv]; ok {
 				continue
 			}
@@ -93,14 +93,14 @@ func getPackages(directive string, conf *Config) ([]*Package, error) {
 		loadPkgs[pkgPath] = false
 	}
 	loaderCfg := &loader.Config{
-		Fset:                suite.Fset,
-		ParserMode:          parser.ParseComments,
-		TypeChecker:         types.Config{
+		Fset:       suite.Fset,
+		ParserMode: parser.ParseComments,
+		TypeChecker: types.Config{
 			DisableUnusedImportCheck: true,
 			IgnoreFuncBodies:         true,
 			Importer:                 importer.Default(),
 		},
-		ImportPkgs:          loadPkgs,
+		ImportPkgs: loadPkgs,
 	}
 	prog, err := loaderCfg.Load()
 	if err != nil {

@@ -43,7 +43,7 @@ func runMain(args []string) error {
 
 	if len(cmd) == 0 {
 		// simply typed 'gen'; run is the default command
-		c.RequestedPackages = tail
+		c.RequestedPackages = tail[1:]
 		return runStandard(c)
 	}
 

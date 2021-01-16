@@ -16,7 +16,7 @@ type config struct {
 var defaultConfig = config{
 	out:        os.Stdout,
 	customName: "_gen.go",
-	Config:     &typewriter.Config{},
+	Config:     &typewriter.Config{SrcPath: os.Args[1]},
 }
 
 // keep in sync with imports.go
